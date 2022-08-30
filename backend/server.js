@@ -9,10 +9,22 @@ const Redis = require("ioredis");
 let RedisStore = require("connect-redis")(session);
 const compression = require("compression");
 let redisClient = new Redis();
-const app = express();
-require("./configs/db");
+const Database = require("./configs/db.js");
 require("./configs/redis");
-app.enable("trust proxy");
+Database();
+const app = express();
+app.use(responseTime());
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  express.json({
+    verify: (req, res, buffer) => (req["rawBody"] = buffer),
+  })
+);
+
+// app.enable("trust proxy");
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
@@ -38,16 +50,7 @@ app.use(
     },
   })
 );
-app.use(responseTime());
-app.use(express.json());
-app.use(cookieParser());
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  express.json({
-    verify: (req, res, buffer) => (req["rawBody"] = buffer),
-  })
-);
+
 app.get("/", (req, res) => {
   const healthcheck = {
     uptime: process.uptime(),
@@ -56,6 +59,13 @@ app.get("/", (req, res) => {
   };
   return res.send(healthcheck);
 });
+
+//!import
+const userRoute = require("./routes/user.route");
+
+app.use("/api", userRoute);
+//!
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
   console.log(`server is listening on port:http://localhost:${PORT}`)

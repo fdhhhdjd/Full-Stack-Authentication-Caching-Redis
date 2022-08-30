@@ -1,0 +1,29 @@
+@basicUrl=http://localhost:5000/api
+
+POST {{basicUrl}}/register
+Content-Type: application/json
+
+{
+ "email":"nguyentientai9@gmail.com",
+ "password":"Taiheo123@"
+}
+
+
+###
+POST {{basicUrl}}/otp
+Content-Type: application/json
+
+{
+
+    "email":"nguyentientai9@gmail.com",
+    "otp":"534554"
+  
+}
+
+###
+PATCH  {{basicUrl}}/password/630dc027901b61fdeaf01826
+Content-Type: application/json
+
+{
+    "password":"Taiheo123@" 
+}
