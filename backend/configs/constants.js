@@ -26,7 +26,7 @@ module.exports = {
   STATUS_CODE_203: "Non-Authoritative Information",
   STATUS_CODE_204: "No Content",
   STATUS_CODE_400: "Request not valid NotFound ",
-  STATUS_CODE_401: "Unauthorized Correct ",
+  STATUS_CODE_401: "Unauthorized Correct",
   STATUS_CODE_404: "Every already Exits",
   STATUS_CODE_401: "Error Password or Email",
   STATUS_CODE_503: "Server Busy",

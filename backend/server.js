@@ -11,6 +11,7 @@ const compression = require("compression");
 let redisClient = new Redis();
 const Database = require("./configs/db.js");
 require("./configs/redis");
+const CONSTANTS = require("./configs/constants");
 Database();
 const app = express();
 app.use(responseTime());
@@ -23,21 +24,6 @@ app.use(
     verify: (req, res, buffer) => (req["rawBody"] = buffer),
   })
 );
-
-// app.enable("trust proxy");
-app.use(
-  session({
-    store: new RedisStore({ client: redisClient }),
-    secret: process.env.KEY_SESSION,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: false,
-      httpOnly: true,
-      maxAge: 5 * 60 * 1000,
-    },
-  })
-);
 app.use(
   compression({
     level: 6,
@@ -47,6 +33,20 @@ app.use(
         return false;
       }
       return compression.filter(req, res);
+    },
+  })
+);
+
+app.use(
+  session({
+    store: new RedisStore({ client: redisClient }),
+    secret: process.env.KEY_SESSION,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      maxAge: CONSTANTS._5_MINUTES,
     },
   })
 );

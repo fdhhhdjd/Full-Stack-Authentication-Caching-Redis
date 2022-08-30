@@ -3,6 +3,7 @@ const {
   CheckAccountRegister,
   VerifyOtp,
   UpdatePassword,
+  CheckLogin,
 } = require("../services/user.services");
 
 const UserCtl = {
@@ -60,6 +61,32 @@ const UserCtl = {
         message: returnReasons("503"),
       });
     }
+  },
+  //Login
+  Login: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const session = req.session;
+      const { code, element } = await CheckLogin({
+        email,
+        password,
+        session,
+      });
+      return res.status(code).json({
+        code,
+        message: returnReasons(code.toString()),
+        element,
+      });
+    } catch (error) {
+      return res.status(503).json({
+        status: 503,
+        message: returnReasons("503"),
+      });
+    }
+  },
+  GetProfile: async (req, res) => {
+    console.log(req.session);
+    res.send(req.session);
   },
 };
 module.exports = UserCtl;
