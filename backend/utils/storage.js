@@ -1,6 +1,13 @@
 const OtpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const CONSTANTS = require("../configs/constants");
+const {
+  ACCESS_TOKEN_SECRET,
+  EXPIRES_ACCESS_TOKEN,
+  REFRESH_TOKEN_SECRET,
+  EXPIRES_REFRESH_TOKEN,
+} = process.env;
 module.exports = {
   /**
    * from String template to URI
@@ -43,6 +50,7 @@ module.exports = {
       ["202", CONSTANTS.STATUS_CODE_202],
       ["203", CONSTANTS.STATUS_CODE_203],
       ["204", CONSTANTS.STATUS_CODE_204],
+      ["401", CONSTANTS.STATUS_CODE_401],
       ["404", CONSTANTS.STATUS_CODE_404],
       ["503", CONSTANTS.STATUS_CODE_503],
       ["default", CONSTANTS.STATUS_CODE_DEFAULT],
@@ -52,5 +60,17 @@ module.exports = {
   //* Check Status return
   returnReasons: (code) => {
     return reasonPhraseCodeProNewMap().get(code);
+  },
+  //* Accept Token
+  createAccessToken({ user_id }) {
+    return jwt.sign({ sub: user_id }, ACCESS_TOKEN_SECRET, {
+      expiresIn: EXPIRES_ACCESS_TOKEN,
+    });
+  },
+  //* Refresh Token
+  createRefreshToken(user_id) {
+    return jwt.sign({ sub: user_id }, REFRESH_TOKEN_SECRET, {
+      expiresIn: EXPIRES_REFRESH_TOKEN,
+    });
   },
 };

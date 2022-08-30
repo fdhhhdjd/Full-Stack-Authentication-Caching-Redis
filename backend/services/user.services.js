@@ -1,10 +1,15 @@
 const { _Otp } = require("../models/otp.model");
 const { _Users } = require("../models/user.model");
 const { validateEmail, isPassword, randomString } = require("../utils/helper");
-const { randomOTPOtp, GeneralHashEncryption } = require("../utils/storage");
+const {
+  randomOTPOtp,
+  GeneralHashEncryption,
+  GeneralCompareEncryption,
+} = require("../utils/storage");
 const { insertOtp, validOtp } = require("./otp.service");
 const CONSTANTS = require("../configs/constants");
 const { NodeMailers } = require("./sendEmail");
+const { GetAccessToken, GenerateRefreshToken } = require("./Token.service.js");
 module.exports = {
   //Register
   CheckAccountRegister: async ({ email }) => {
@@ -44,7 +49,6 @@ module.exports = {
       if (!isValid)
         return {
           code: 401,
-          message: "Invalid OTP",
         };
       if (isValid && email === lastOtp.email) {
         const Key_id = randomString(CONSTANTS._KEY_RANDOM_STRING);
@@ -95,6 +99,39 @@ module.exports = {
         element: user,
       };
     } catch (error) {
+      return {
+        code: 503,
+      };
+    }
+  },
+  CheckLogin: async ({ email, password, session }) => {
+    try {
+      const user = await _Users.findOne({ email: email }).exec();
+      const passwords = await GeneralCompareEncryption(password, user.password);
+      //Save Session
+      session.user = user;
+
+      if (!user) {
+        return {
+          code: 404,
+        };
+      }
+      if (!passwords) {
+        return {
+          code: 401,
+        };
+      }
+      const accessToken = GetAccessToken({ user_id: user._id });
+      const refreshToken = GenerateRefreshToken({ user_id: user._id });
+      return {
+        code: 200,
+        element: {
+          accessToken,
+          refreshToken,
+        },
+      };
+    } catch (error) {
+      console.log(error);
       return {
         code: 503,
       };
