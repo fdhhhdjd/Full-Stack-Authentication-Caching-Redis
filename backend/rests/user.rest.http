@@ -27,3 +27,16 @@ Content-Type: application/json
 {
     "password":"Taiheo123@" 
 }
+
+
+###
+POST  {{basicUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "nguyentientai9@gmail.com",
+    "password":"Taiheo123@" 
+}
+
+###
+GET  {{basicUrl}}/profile
