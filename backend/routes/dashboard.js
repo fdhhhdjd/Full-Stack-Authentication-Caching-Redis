@@ -1,7 +1,7 @@
 const route = require("express").Router();
-const VerifyToken = require("../middlewares/VerifyToken.middleware");
+const VerifyAcceptToken = require("../middlewares/VerifyToken.middleware");
 
-route.get("/dashboard", VerifyToken, (req, res) => {
+route.get("/dashboard", VerifyAcceptToken, (req, res) => {
   return res.json({ status: true, message: "Hello from dashboard." });
 });
 
