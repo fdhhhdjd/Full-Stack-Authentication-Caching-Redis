@@ -1,3 +1,4 @@
+"use strict";
 const { google } = require("googleapis");
 const nodemailer = require("nodemailer");
 const {
