@@ -73,4 +73,12 @@ module.exports = {
       expiresIn: EXPIRES_REFRESH_TOKEN,
     });
   },
+  //* Verify RefreshToken
+  VerifyToken(token) {
+    return jwt.verify(token, REFRESH_TOKEN_SECRET);
+  },
+  //* Verify AcceptToken
+  VerifyAccToken(token) {
+    return jwt.verify(token, ACCESS_TOKEN_SECRET);
+  },
 };

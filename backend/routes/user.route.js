@@ -1,5 +1,7 @@
 const userCtl = require("../controllers/user.controller");
 const router = require("express").Router();
+const VerifyRefreshToken = require("../middlewares/VerifyRefreshToken.middleware");
+const VerifyAcceptToken = require("../middlewares/VerifyToken.middleware");
 //Register
 router.post("/register", userCtl.Register);
 
@@ -13,6 +15,6 @@ router.patch("/password/:id", userCtl.UpdatePassword);
 router.post("/login", userCtl.Login);
 
 //Profile
-router.get("/profile", userCtl.GetProfile);
+router.get("/profile", VerifyAcceptToken, userCtl.GetProfile);
 
 module.exports = router;
