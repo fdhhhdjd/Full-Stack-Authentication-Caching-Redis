@@ -10,14 +10,20 @@ const { insertOtp, validOtp } = require("./otp.service");
 const CONSTANTS = require("../configs/constants");
 const { NodeMailers } = require("./sendEmail");
 const { GetAccessToken, GenerateRefreshToken } = require("./Token.service.js");
+const { del, set } = require("../utils/Limited");
 module.exports = {
   //Register
   CheckAccountRegister: async ({ email }) => {
     const user = await _Users.findOne({ email: email });
     const Email = validateEmail(email);
-    if (user && !Email) {
+    if (user) {
       return {
         code: 404,
+      };
+    }
+    if (!Email) {
+      return {
+        code: 401,
       };
     }
     const OTP = randomOTPOtp();
@@ -132,6 +138,40 @@ module.exports = {
       };
     } catch (error) {
       console.log(error);
+      return {
+        code: 503,
+      };
+    }
+  },
+  GetAccessToken: async ({ user_id }) => {
+    try {
+      const access_token = GetAccessToken({ user_id });
+      const refresh_token = GenerateRefreshToken({ user_id });
+      return {
+        code: 201,
+        element: {
+          access_token,
+          refresh_token,
+        },
+      };
+    } catch (error) {
+      return {
+        code: 503,
+      };
+    }
+  },
+  RemoveALL: async ({ user_id, token, session }) => {
+    try {
+      await del(user_id.toString());
+
+      await set("BL_" + user_id.toString(), token);
+
+      session.destroy();
+      return {
+        code: 201,
+        element: {},
+      };
+    } catch (error) {
       return {
         code: 503,
       };

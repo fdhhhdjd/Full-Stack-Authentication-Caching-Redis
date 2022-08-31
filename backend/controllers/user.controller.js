@@ -4,8 +4,9 @@ const {
   VerifyOtp,
   UpdatePassword,
   CheckLogin,
+  GetAccessToken,
+  RemoveALL,
 } = require("../services/user.services");
-const { del, set } = require("../utils/Limited");
 const UserCtl = {
   Register: async (req, res) => {
     try {
@@ -89,17 +90,44 @@ const UserCtl = {
     res.send(req.session);
   },
   Logout: async (req, res) => {
-    const user_id = req.user.sub;
-
-    const token = req.token;
-
-    await del(user_id.toString());
-
-    await set("BL_" + user_id.toString(), token);
-
-    req.session.destroy();
-
-    return res.status(200).json({ status: 200, message: "success." });
+    try {
+      const user_id = req.user.sub;
+      const token = req.token;
+      const session = req.session;
+      const { code, element } = await RemoveALL({
+        user_id,
+        token,
+        session,
+      });
+      return res.status(code).json({
+        code,
+        message: returnReasons(code.toString()),
+        element,
+      });
+    } catch (error) {
+      return res.status(503).json({
+        status: 503,
+        message: returnReasons("503"),
+      });
+    }
+  },
+  GetAccessTokens: async (req, res) => {
+    try {
+      const user_id = req.user.sub;
+      const { code, element } = await GetAccessToken({
+        user_id,
+      });
+      return res.status(code).json({
+        code,
+        message: returnReasons(code.toString()),
+        element,
+      });
+    } catch (error) {
+      return res.status(503).json({
+        status: 503,
+        message: returnReasons("503"),
+      });
+    }
   },
 };
 module.exports = UserCtl;
