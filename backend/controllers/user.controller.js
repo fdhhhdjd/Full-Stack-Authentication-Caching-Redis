@@ -86,11 +86,8 @@ const UserCtl = {
     }
   },
   GetProfile: async (req, res) => {
-    return res.status(200).json({
-      status: 200,
-      message: returnReasons("200"),
-      element: req.session.user,
-    });
+    console.log(req.session);
+    res.send(req.session);
   },
   Logout: async (req, res) => {
     try {

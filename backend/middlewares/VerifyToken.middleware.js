@@ -1,6 +1,5 @@
 const REDIS = require("../configs/redis");
 const { VerifyAccToken } = require("../utils/storage");
-const { returnReasons } = require("./HandleError");
 const VerifyAcceptToken = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
@@ -19,9 +18,10 @@ const VerifyAcceptToken = (req, res, next) => {
       next();
     });
   } catch (error) {
-    return res.status(503).json({
-      status: 503,
-      message: returnReasons("503"),
+    return res.status(401).json({
+      status: false,
+      message: "Your session is not valid.",
+      data: error,
     });
   }
 };
