@@ -1,5 +1,6 @@
 const REDIS = require("../configs/redis");
 const { VerifyToken } = require("../utils/storage");
+const { returnReasons } = require("./HandleError");
 const VerifyRefreshToken = (req, res, next) => {
   const token = req.body.token;
   if (token === null)
@@ -7,7 +8,6 @@ const VerifyRefreshToken = (req, res, next) => {
   try {
     const decoded = VerifyToken(token);
     req.user = decoded;
-    // verify if token is in store or not
     REDIS.get(decoded.sub.toString(), (err, data) => {
       if (err) throw err;
 
@@ -25,9 +25,9 @@ const VerifyRefreshToken = (req, res, next) => {
       next();
     });
   } catch (error) {
-    return res.status(401).json({
-      status: 401,
-      message: "Your session is not valid.",
+    return res.status(503).json({
+      status: 503,
+      message: returnReasons("503"),
     });
   }
 };
