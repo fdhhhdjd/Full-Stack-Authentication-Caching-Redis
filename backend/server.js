@@ -62,8 +62,10 @@ app.get("/", (req, res) => {
 
 //!import
 const userRoute = require("./routes/user.route");
+const Dashboard = require("./routes/dashboard");
 
-app.use("/api", userRoute);
+app.use("/v1/api", userRoute);
+app.use("/v1/user", Dashboard);
 //!
 
 const PORT = process.env.PORT || 5000;
