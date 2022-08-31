@@ -17,4 +17,7 @@ router.post("/login", userCtl.Login);
 //Profile
 router.get("/profile", VerifyAcceptToken, userCtl.GetProfile);
 
+//Logout
+router.get("/logout", VerifyAcceptToken, userCtl.Logout);
+
 module.exports = router;

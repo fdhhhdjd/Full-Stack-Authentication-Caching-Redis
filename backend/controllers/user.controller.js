@@ -5,7 +5,7 @@ const {
   UpdatePassword,
   CheckLogin,
 } = require("../services/user.services");
-
+const { del, set } = require("../utils/Limited");
 const UserCtl = {
   Register: async (req, res) => {
     try {
@@ -87,6 +87,19 @@ const UserCtl = {
   GetProfile: async (req, res) => {
     console.log(req.session);
     res.send(req.session);
+  },
+  Logout: async (req, res) => {
+    const user_id = req.user.sub;
+
+    const token = req.token;
+
+    await del(user_id.toString());
+
+    await set("BL_" + user_id.toString(), token);
+
+    req.session.destroy();
+
+    return res.status(200).json({ status: 200, message: "success." });
   },
 };
 module.exports = UserCtl;

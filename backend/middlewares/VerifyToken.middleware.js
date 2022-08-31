@@ -3,13 +3,11 @@ const { VerifyAccToken } = require("../utils/storage");
 const VerifyAcceptToken = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    console.log(token);
     const decoded = VerifyAccToken(token);
-    req.userData = decoded;
+    req.user = decoded;
 
     req.token = token;
 
-    // varify blacklisted access token.
     REDIS.get("BL_" + decoded.sub.toString(), (err, data) => {
       if (err) throw err;
 
