@@ -1,13 +1,12 @@
 const REDIS = require("../configs/redis");
 const { VerifyToken } = require("../utils/storage");
 const VerifyRefreshToken = (req, res, next) => {
-  const token = req.header("Authorization");
+  const token = req.body.token;
   if (token === null)
     return res.status(401).json({ status: false, message: "Invalid request." });
   try {
     const decoded = VerifyToken(token);
-    req.userData = decoded;
-
+    req.user = decoded;
     // verify if token is in store or not
     REDIS.get(decoded.sub.toString(), (err, data) => {
       if (err) throw err;
