@@ -20,4 +20,7 @@ router.get("/profile", VerifyAcceptToken, userCtl.GetProfile);
 //Logout
 router.get("/logout", VerifyAcceptToken, userCtl.Logout);
 
+//Get AccessToken
+router.get("/token", VerifyRefreshToken, userCtl.GetAccessTokens);
+
 module.exports = router;
