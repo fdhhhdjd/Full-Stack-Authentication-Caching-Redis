@@ -86,7 +86,6 @@ const UserCtl = {
     }
   },
   GetProfile: async (req, res) => {
-    console.log(req.session);
     res.send(req.session);
   },
   Logout: async (req, res) => {

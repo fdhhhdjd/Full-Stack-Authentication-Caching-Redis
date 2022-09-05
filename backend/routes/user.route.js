@@ -15,7 +15,7 @@ router.patch("/password/:id", userCtl.UpdatePassword);
 router.post("/login", userCtl.Login);
 
 //Profile
-router.get("/profile", VerifyAcceptToken, userCtl.GetProfile);
+router.get("/profile", userCtl.GetProfile);
 
 //Logout
 router.get("/logout", VerifyAcceptToken, userCtl.Logout);
